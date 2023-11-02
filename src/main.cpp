@@ -62,6 +62,11 @@ void loadRandomPresses() {
     retry:
       int press = random(RELAY_PIN_COUNT);
       Serial.print(press);
+      if (i == 0 && press == RandomPresses[RELAY_PIN_COUNT-1]) {
+        // Don't allow a new batch to start with a repeat of the final press of the last batch
+        Serial.print("←");
+        goto retry;
+      }
       for (int j = 0; j < i; j++) {
         if (press == RandomPresses[j]) {
           Serial.print("←");
