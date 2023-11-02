@@ -11,13 +11,13 @@
 
 #define SENSOR_PIN 2
 #define RELAY_PIN_0 3
-#define RELAY_PIN_COUNT 6
+#define BUTTON_COUNT 6
 
 unsigned long StartTime = millis();
 unsigned long IdleTimeMs = IDLE_TIME_SECONDS * 1000; // Ignore changes for this many milliseconds
 unsigned long LastTriggerTime = StartTime - IdleTimeMs;
-int RandomPresses[RELAY_PIN_COUNT];
-int CurrentPress = RELAY_PIN_COUNT;
+int RandomPresses[BUTTON_COUNT];
+int CurrentPress = BUTTON_COUNT;
 
 int getRelayPin(int relayNr);
 void setRelay(int relayNr, int state);
@@ -31,7 +31,7 @@ void setup() {
   // Set PIR sensor pin to input
   pinMode(SENSOR_PIN, INPUT);
   // Set relay pins to output and turn them off
-  for (int i = 0; i < RELAY_PIN_COUNT; i++) {
+  for (int i = 0; i < BUTTON_COUNT; i++) {
     pinMode(getRelayPin(i), OUTPUT);
     setRelay(i, HIGH);
   }
@@ -50,7 +50,7 @@ bool isMotionDetected() {
 }
 
 int getRandomPress() {
-  if (CurrentPress >= RELAY_PIN_COUNT)
+  if (CurrentPress >= BUTTON_COUNT)
     loadRandomPresses();
   return RandomPresses[CurrentPress++];
 }
@@ -58,11 +58,11 @@ int getRandomPress() {
 // Load a batch of unique button presses
 void loadRandomPresses() {
   Serial.print("Loading presses: ");
-  for (int i = 0; i < RELAY_PIN_COUNT; i++) {
+  for (int i = 0; i < BUTTON_COUNT; i++) {
     retry:
-      int press = random(RELAY_PIN_COUNT);
+      int press = random(BUTTON_COUNT);
       Serial.print(press);
-      if (i == 0 && press == RandomPresses[RELAY_PIN_COUNT-1]) {
+      if (i == 0 && press == RandomPresses[BUTTON_COUNT-1]) {
         // Don't allow a new batch to start with a repeat of the final press of the last batch
         Serial.print("←");
         goto retry;
