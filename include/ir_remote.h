@@ -1,0 +1,2 @@
+void IRsetup();
+void IRloop();
